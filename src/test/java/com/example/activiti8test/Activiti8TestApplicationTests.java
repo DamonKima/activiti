@@ -64,7 +64,6 @@ class Activiti8TestApplicationTests {
             System.out.println("流程定义：" + pd);
         }
 
-
     }
 
 
