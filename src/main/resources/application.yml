@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/activiti8?nullCatalogMeansCurrent=true
+    username: root
+    password: shuizhiyve1!
+  activiti:
+    database-schema-update: true
+    db-history-used: true
+    history-level: full
+    check-process-definitions: true
