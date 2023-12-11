@@ -6,9 +6,8 @@ import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.runtime.TaskRuntime;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.*;
+import org.activiti.engine.repository.Deployment;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -42,6 +41,14 @@ class Activiti8TestApplicationTests {
         System.out.println("processEngine = " + processEngine);
     }
 
+    /**
+     * 因为使用了整合框架，所以可以直接<br>
+     * 使用注入的方式来使用相关的类
+     */
+
+    @Autowired
+    private ProcessEngine processEngine;
+
     @Autowired
     private ProcessRuntime processRuntime;
 
@@ -49,7 +56,25 @@ class Activiti8TestApplicationTests {
     private TaskRuntime taskRuntime;
 
     @Autowired
+    private RuntimeService runtimeService;
+
+    @Autowired
     private SecurityUtil securityUtil;
+
+    /**
+     * 进行流程部署
+     */
+    @Test
+    public void deploy(){
+        securityUtil.logInAs("system");
+        RepositoryService repositoryService = processEngine.getRepositoryService();
+        Deployment deployment = repositoryService.createDeployment()
+                .addClasspathResource("processes/leave.bpmn20.xml")
+                .name("请假申请流程")
+                .deploy();
+        System.out.println("deployment.getId() = " + deployment.getId());
+        System.out.println("deployment.getName() = " + deployment.getName());
+    }
 
     /**
      * 查看流程定义
