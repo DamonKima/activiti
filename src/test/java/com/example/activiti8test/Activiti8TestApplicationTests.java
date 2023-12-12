@@ -1,6 +1,7 @@
 package com.example.activiti8test;
 
 
+import com.example.activiti8test.utils.SecurityUtil;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.runtime.shared.query.Page;
@@ -12,8 +13,6 @@ import org.activiti.engine.task.Task;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import com.example.activiti8test.utils.SecurityUtil;
 
 import java.util.List;
 
@@ -88,7 +87,7 @@ class Activiti8TestApplicationTests {
         Page<ProcessDefinition> processDefinitionPage =
                 processRuntime.processDefinitions(Pageable.of(0, 10));
         System.out.println("可用的流程定义数量：" + processDefinitionPage.getTotalItems());
-        for (org.activiti.api.process.model.ProcessDefinition pd : processDefinitionPage.getContent()) {
+        for (ProcessDefinition pd : processDefinitionPage.getContent()) {
             System.out.println("流程定义：" + pd);
         }
     }
@@ -109,7 +108,6 @@ class Activiti8TestApplicationTests {
      */
     @Test
     public void queryProcessInstance(){
-        securityUtil.logInAs("system");
         RuntimeService runtimeService = processEngine.getRuntimeService();
         List<ProcessInstance> leave = runtimeService.createProcessInstanceQuery()
                 .processDefinitionKey("leave")

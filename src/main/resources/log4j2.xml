@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- status：用来指定log4j本身的打印日志级别,monitorInterval:指定log4j自动重新配置的监测间隔时间 -->
+<configuration status="WARN" monitorInterval="30">
+    <!-- 自己设置属性，后面通过${}来访问 -->
+    <properties>
+        <!--<property name="LOG_HOME">${web:rootDir}/logs</property>-->
+        <property name="LOG_HOME">/opt/logs</property>
+        <!--日志名称-->
+        <property name="LOG_NAME">nanjustar-server-logs</property>
+        <!--日志格式-->
+        <property name="LOG_FORMAT">[%d{yyyy-MM-dd HH:mm:ss.SSS}] %p %t %c[%L] - %m %n</property>
+        <property name="LOG_FORMAT_CONSOLE">%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%-5level} [%t] %highlight{%c{1.}.%M(%L)}: %msg%n%throwable</property>
+        <!--备份目录- 根据年月建立文件夹 -->
+        <property name="BACKUP_HOME">${LOG_HOME}/$${date:yyyy-MM}</property>
+        <!--备份频率-->
+        <property name="BACK_HZ">%d{yyyy-MM-dd}</property>
+    </properties>
+    <appenders>
+        <!--控制台日志-->
+        <console name="console" target="SYSTEM_OUT">
+            <!--输出日志的格式-->
+            <PatternLayout pattern="${LOG_FORMAT_CONSOLE}" disableAnsi="false" noConsoleNoAnsi="false"/>
+        </console>
+
+    </appenders>
+
+    <loggers>
+        <!--根日志配置-->
+        <root level="info">
+            <appender-ref ref="console"/>
+            <appender-ref ref="infoLog"/>
+            <appender-ref ref="warnLog"/>
+            <appender-ref ref="errorLog"/>
+        </root>
+    </loggers>
+</configuration>
+
+
