@@ -5,14 +5,17 @@ import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
-import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.engine.*;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.example.activiti8test.utils.SecurityUtil;
+
+import java.util.List;
 
 @SpringBootTest
 class Activiti8TestApplicationTests {
@@ -52,11 +55,11 @@ class Activiti8TestApplicationTests {
     @Autowired
     private ProcessRuntime processRuntime;
 
-    @Autowired
-    private TaskRuntime taskRuntime;
+//    @Autowired
+//    private TaskRuntime taskRuntime;
 
-    @Autowired
-    private RuntimeService runtimeService;
+//    @Autowired
+//    private RuntimeService runtimeService;
 
     @Autowired
     private SecurityUtil securityUtil;
@@ -88,9 +91,60 @@ class Activiti8TestApplicationTests {
         for (org.activiti.api.process.model.ProcessDefinition pd : processDefinitionPage.getContent()) {
             System.out.println("流程定义：" + pd);
         }
-
     }
 
+    /**
+     * 启动流程实例
+     */
+    @Test
+    public void startProcessInstance(){
+        RuntimeService runtimeService = processEngine.getRuntimeService();
+        ProcessInstance processInstance = runtimeService.
+                startProcessInstanceByKey("leave", "1001");
+        System.out.println("processInstance.getBusinessKey() = " + processInstance.getBusinessKey());
+    }
+
+    /**
+     * 查询流程实例
+     */
+    @Test
+    public void queryProcessInstance(){
+        securityUtil.logInAs("system");
+        RuntimeService runtimeService = processEngine.getRuntimeService();
+        List<ProcessInstance> leave = runtimeService.createProcessInstanceQuery()
+                .processDefinitionKey("leave")
+                .list();
+        for (ProcessInstance processInstance : leave) {
+            System.out.println("processInstance.getBusinessKey() = " + processInstance.getBusinessKey());
+            System.out.println("processInstance.getName() = " + processInstance.getName());
+            System.out.println("processInstance.getProcessInstanceId() = " + processInstance.getProcessInstanceId());
+        }
+    }
+
+    /**
+     * 查询某个候选人小组拥有流程实例，若是此时用户属于该候选人小组，则拥有处理该任务的权力，可以选择完成任务
+     */
+    @Test
+    public void queryTask(){
+        TaskService taskService = processEngine.getTaskService();
+        List<Task> list = taskService.createTaskQuery()
+                .processDefinitionKey("leave")
+                .taskCandidateGroup("deptLeader")
+                .list();
+        for (Task task : list) {
+            System.out.println("task.getProcessInstanceId() = " + task.getProcessInstanceId());
+        }
+    }
+
+    /**
+     * 处理流程任务——即完成流程中间节点<br>
+     * 目前处理的是请假流程，需要检查处理人是不是属于对应的
+     * 候选人分组
+     */
+    @Test
+    public void completeProcess(){
+
+    }
 
 
 
