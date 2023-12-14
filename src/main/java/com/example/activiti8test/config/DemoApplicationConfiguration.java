@@ -29,6 +29,15 @@ public class DemoApplicationConfiguration {
                 {"other", "password", "ROLE_ACTIVITI_USER", "GROUP_otherTeam"},
                 {"system", "password", "ROLE_ACTIVITI_USER"},
                 {"admin", "password", "ROLE_ACTIVITI_ADMIN"},
+                // 添加自己的用户
+                // 普通用户，没有分组
+                {"Stefan", "password", "ROLE_USER"},
+                {"Damon", "password", "ROLE_USER"},
+                {"KiMa", "password", "ROLE_USER"},
+                // 领导部门
+                {"leader", "password", "ROLE_DEPT-LEADER", "GROUP_deptLeader"},
+                // 人事管理部门
+                {"hr", "password", "ROLE_HR", "GROUP_hr"},
         };
 
         for (String[] user : usersGroupsAndRoles) {
